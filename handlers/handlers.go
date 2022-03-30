@@ -16,6 +16,8 @@ type news struct {
 	Story     string
 	Writer    string
 	Time      string
+	Edit      string
+	Delete    string
 }
 
 var i news
@@ -26,7 +28,7 @@ func Run(r *chi.Mux) {
 	r.Get("/feed", HomePageHandler)
 	r.Get("/form", FormPageHandler)
 	r.Post("/feed", PostHomeageHandler)
-	//r.Patch("/feed", EditHandler)
+	//r.Get("/feed/{{.Id}}", EditHandler)
 	//r.Delete("/feed", DeleteHandler)
 
 }
@@ -61,11 +63,15 @@ func PostHomeageHandler(writer http.ResponseWriter, request *http.Request) {
 	Writer := request.FormValue("writers-name")
 	Time := time.Now().String()
 	Id := uuid.NewString()
+	Edit := "EDIT"
+	Delete := "DELETE"
 	i.PostTitle = Title
 	i.Story = Story
 	i.Writer = Writer
 	i.Id = Id
 	i.Time = Time
+	i.Edit = Edit
+	i.Delete = Delete
 	j = append(j, i)
 	fmt.Println(j)
 
@@ -75,7 +81,9 @@ func PostHomeageHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func EditHandler(writer http.ResponseWriter, request *http.Request) {
-
+	//iterate through struct
+	//find maytching i.d
+	// j= append(j[0:i], j[i+1:]...)
 }
 
 func DeleteHandler(writer http.ResponseWriter, request *http.Request) {
