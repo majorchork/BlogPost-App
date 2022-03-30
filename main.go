@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/majorchork/blogapp/handlers"
 	"html/template"
 	"log"
 	"net/http"
@@ -11,43 +13,70 @@ import (
 
 var templates *template.Template
 
-type blogpost struct {
+type Blogpost struct {
 	PostTitle   string
 	PostData    string
 	WritersName string
 	Time        time.Time
+	Edit        string
+	Delete      string
 }
 
-var blog blogpost
+var Blog []Blogpost
 
 func main() {
-	templates = template.Must(template.ParseGlob("templates/*.html"))
 	router := chi.NewRouter()
-	router.Get("/", RenderHandler)
-	router.Post("/", PostHandler)
-	http.Handle("/", router)
+	router.Use(middleware.Logger)
+	handlers.Run(router)
+	//http.Handle("/", router)
 	fmt.Println("Server started....")
-	http.ListenAndServe(":1759", nil)
-}
-func RenderHandler(w http.ResponseWriter, router *http.Request) {
-	err := templates.ExecuteTemplate(w, "index.html", blog)
+	err := http.ListenAndServe(":1769", router)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
+
 }
 
-func PostHandler(w http.ResponseWriter, router *http.Request) {
-	Title := router.FormValue("post-title")
-	Story := router.FormValue("post-data")
-	Writer := router.FormValue("writers-name")
-	blog = blogpost{
+func RenderHandler(w http.ResponseWriter, router *http.Request) {
+	file, err := templates.ParseFiles("templates/index.html")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = file.ExecuteTemplate(w, "index.html", nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+}
+func Test(w http.ResponseWriter, request *http.Request) {
+	err := request.ParseForm()
+	if err != nil {
+		return
+	}
+
+	Title := request.PostForm.Get("post-title")
+	Story := request.PostForm.Get("post-data")
+	Writer := request.PostForm.Get("writers-name")
+
+	newPost := Blogpost{
 		PostTitle:   Title,
 		PostData:    Story,
 		WritersName: Writer,
-		Time:        time.Time{},
+		Time:        time.Now(),
 	}
-	err := templates.ExecuteTemplate(w, "index.html", blog)
-	if err != nil {
-		log.Fatal(err)
+
+	Blog = append(Blog, newPost)
+	fmt.Println(Blog)
+
+	temp := template.Must(template.ParseFiles("templates/feed.html"))
+	er := temp.Execute(w, newPost)
+	if er != nil {
+		log.Fatal(er)
 	}
+
+	http.Redirect(w, request, "/feed", http.StatusMovedPermanently)
 }
