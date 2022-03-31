@@ -12,13 +12,14 @@
     <div>
    {{ range $i, $v := .}}
         <div>
-            <h1>{{.PostTitle }}</h1>
+            <h2>{{.PostTitle }}</h2>
             <p>{{.Story }}</p>
             <p>{{.Writer }}</p>
             <p>{{.Time }}</p>
             <h6>{{.Id}}</h6>
-            <a href="feed/{{ .Id }}">{{.Edit}}</a>
+            <a href="edit/{{ .Id }}">{{.Edit}}</a>
             <a href="del/{{ .Id }}" target="">{{.Delete}}</a>
+            <a href="read/{{ .Id }}" target="">{{.Read}}</a>
         </div>
 {{end}}
     </div>
