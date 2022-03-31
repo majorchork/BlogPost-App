@@ -18,6 +18,7 @@ type news struct {
 	Time      string
 	Edit      string
 	Delete    string
+	Read      string
 }
 
 var i news
@@ -28,8 +29,10 @@ func Run(r *chi.Mux) {
 	r.Get("/feed", HomePageHandler)
 	r.Get("/form", FormPageHandler)
 	r.Post("/feed", PostHomeageHandler)
-	//r.Get("/feed/{{.Id}}", EditHandler)
-	//r.Delete("/feed", DeleteHandler)
+	r.Get("/edit/{Id}", EditHandler)
+	r.Post("/update/{Id}", UpdateHandler)
+	r.Get("/del/{Id}", DeleteHandler)
+	r.Get("/read/{Id}", ReadHandler)
 
 }
 
@@ -55,6 +58,7 @@ func FormPageHandler(writer http.ResponseWriter, request *http.Request) {
 		log.Fatalf("error executing template on index page")
 		return
 	}
+
 }
 
 func PostHomeageHandler(writer http.ResponseWriter, request *http.Request) {
@@ -65,6 +69,7 @@ func PostHomeageHandler(writer http.ResponseWriter, request *http.Request) {
 	Id := uuid.NewString()
 	Edit := "EDIT"
 	Delete := "DELETE"
+	Read := "READ"
 	i.PostTitle = Title
 	i.Story = Story
 	i.Writer = Writer
@@ -72,6 +77,7 @@ func PostHomeageHandler(writer http.ResponseWriter, request *http.Request) {
 	i.Time = Time
 	i.Edit = Edit
 	i.Delete = Delete
+	i.Read = Read
 	j = append(j, i)
 	fmt.Println(j)
 
@@ -81,11 +87,55 @@ func PostHomeageHandler(writer http.ResponseWriter, request *http.Request) {
 }
 
 func EditHandler(writer http.ResponseWriter, request *http.Request) {
-	//iterate through struct
-	//find maytching i.d
-	// j= append(j[0:i], j[i+1:]...)
+	Id := chi.URLParam(request, "Id")
+	var data news
+	for _, val := range j {
+		if val.Id == Id {
+			data = val
+		}
+	}
+	temp := template.Must(template.ParseFiles("templates/index.html"))
+	temp.Execute(writer, data)
+}
+
+func UpdateHandler(writer http.ResponseWriter, request *http.Request) {
+	Id := chi.URLParam(request, "Id")
+	data := news{
+		PostTitle: request.FormValue("post-title"),
+		Story:     request.FormValue("post-data"),
+		Writer:    request.FormValue("writers-name"),
+		Time:      time.Now().String(),
+		Id:        uuid.NewString(),
+		Edit:      "EDIT",
+		Delete:    "DELETE",
+		Read:      "READ",
+	}
+	for i, _ := range j {
+		if j[i].Id == Id {
+			j[i] = data
+		}
+	}
+	http.Redirect(writer, request, "/feed", 302)
+}
+func ReadHandler(writer http.ResponseWriter, request *http.Request) {
+	ID := chi.URLParam(request, "Id")
+	var p news
+	for ind, _ := range j {
+		if ID == j[ind].Id {
+			p = j[ind]
+		}
+	}
+	temp := template.Must(template.ParseFiles("templates/data.html"))
+	temp.Execute(writer, p)
 }
 
 func DeleteHandler(writer http.ResponseWriter, request *http.Request) {
+	ID := chi.URLParam(request, "Id")
+	for ind, _ := range j {
+		if ID == j[ind].Id {
+			j = append(j[:ind], j[ind+1:]...)
 
+		}
+	}
+	http.Redirect(writer, request, "/feed", 302)
 }

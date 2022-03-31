@@ -2,14 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Happening From Withnesses</title>
+    <title>Happenings From Eye Witnesses</title>
 </head>
 <header>
-<a href="/index">DROP Gist</a>
+<a href="/form">DROP Gist</a>
 </header>
 <body>
     <h1>Hot Gist!!!</h1>
-
-
+    <div>
+   {{ range $i, $v := .}}
+        <div>
+            <h1>{{.PostTitle }}</h1>
+            <p>{{.Story }}</p>
+            <p>{{.Writer }}</p>
+            <p>{{.Time }}</p>
+            <h6>{{.Id}}</h6>
+            <a href="feed/{{ .Id }}">{{.Edit}}</a>
+            <a href="del/{{ .Id }}" target="">{{.Delete}}</a>
+        </div>
+{{end}}
+    </div>
 </body>
 </html>
