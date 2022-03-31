@@ -52,31 +52,3 @@ func RenderHandler(w http.ResponseWriter, router *http.Request) {
 	}
 
 }
-func Test(w http.ResponseWriter, request *http.Request) {
-	err := request.ParseForm()
-	if err != nil {
-		return
-	}
-
-	Title := request.PostForm.Get("post-title")
-	Story := request.PostForm.Get("post-data")
-	Writer := request.PostForm.Get("writers-name")
-
-	newPost := Blogpost{
-		PostTitle:   Title,
-		PostData:    Story,
-		WritersName: Writer,
-		Time:        time.Now(),
-	}
-
-	Blog = append(Blog, newPost)
-	fmt.Println(Blog)
-
-	temp := template.Must(template.ParseFiles("templates/feed.html"))
-	er := temp.Execute(w, newPost)
-	if er != nil {
-		log.Fatal(er)
-	}
-
-	http.Redirect(w, request, "/feed", http.StatusMovedPermanently)
-}
