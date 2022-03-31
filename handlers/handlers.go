@@ -94,7 +94,7 @@ func EditHandler(writer http.ResponseWriter, request *http.Request) {
 			data = val
 		}
 	}
-	temp := template.Must(template.ParseFiles("templates/index.html"))
+	temp := template.Must(template.ParseFiles("templates/update.html"))
 	temp.Execute(writer, data)
 }
 
@@ -102,7 +102,7 @@ func UpdateHandler(writer http.ResponseWriter, request *http.Request) {
 	Id := chi.URLParam(request, "Id")
 	data := news{
 		PostTitle: request.FormValue("post-title"),
-		Story:     request.FormValue("post-data"),
+		Story:     request.FormValue("post-story"),
 		Writer:    request.FormValue("writers-name"),
 		Time:      time.Now().String(),
 		Id:        uuid.NewString(),
@@ -113,9 +113,11 @@ func UpdateHandler(writer http.ResponseWriter, request *http.Request) {
 	for i, _ := range j {
 		if j[i].Id == Id {
 			j[i] = data
+			fmt.Println(j[i])
+			break
 		}
 	}
-	http.Redirect(writer, request, "/feed", 302)
+	http.Redirect(writer, request, "/feed?234567yuhgbvcdsw3", http.StatusMovedPermanently)
 }
 func ReadHandler(writer http.ResponseWriter, request *http.Request) {
 	ID := chi.URLParam(request, "Id")
@@ -123,6 +125,10 @@ func ReadHandler(writer http.ResponseWriter, request *http.Request) {
 	for ind, _ := range j {
 		if ID == j[ind].Id {
 			p = j[ind]
+			break
+		} else if ind == len(j)-1 && ID != j[ind].Id {
+			log.Fatalf("user Id: %s is invalid", ID)
+			return
 		}
 	}
 	temp := template.Must(template.ParseFiles("templates/data.html"))
@@ -134,7 +140,10 @@ func DeleteHandler(writer http.ResponseWriter, request *http.Request) {
 	for ind, _ := range j {
 		if ID == j[ind].Id {
 			j = append(j[:ind], j[ind+1:]...)
-
+			break
+		} else if ind == len(j)-1 && ID != j[ind].Id {
+			log.Fatalf("user Id: %s is invalid", ID)
+			return
 		}
 	}
 	http.Redirect(writer, request, "/feed", 302)
