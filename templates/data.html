@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ReadPost</title>
 </head>
 <body>
+<header>Have You Hear That</header>
+<a href="/feed">Back To Feed</a>
 <div>
-
     <div>
-        <h1>{{.PostTitle}}</h1>
-        <p>{{.PostData}}</p>
-        <p>{{.WritersName}}</p>
-    </div>
+        <h2>{{.PostTitle }}</h2>
+        <p>{{.Story }}</p>
+        <p>{{.Writer }}</p>
+        <p>{{.Time }}</p>
+        <h6>{{.Id}}</h6>
 
+    </div>
 </div>
 </body>
 </html>
