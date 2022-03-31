@@ -3,23 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Happenings From Eye Witnesses</title>
+
+    <style>
+        a{
+            text-decoration: none;
+            color: black;
+        }
+        a:hover{
+            color: aquamarine;
+            text-transform: lowercase;
+        }
+        body{
+            background-color: black;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .post_flex{
+            background-color: whitesmoke;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 50px;
+        }
+        .links a{
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 20px;
+            transition: ease-in-out;
+        }
+        .hide{
+            visibility: hidden;
+        }
+        header a{
+            color: aliceblue;
+            font-size: 20px;
+        }
+        header a:hover{
+            color: aqua;
+        }
+    </style>
 </head>
 <header>
-<a href="/form">DROP Gist</a>
+<a href="/form">Drop Gist</a>
 </header>
 <body>
     <h1>Hot Gist!!!</h1>
     <div>
    {{ range $i, $v := .}}
-        <div>
+        <div class="post_flex">
             <h2>{{.PostTitle }}</h2>
             <p>{{.Story }}</p>
             <p>{{.Writer }}</p>
             <p>{{.Time }}</p>
-            <h6>{{.Id}}</h6>
-            <a href="edit/{{ .Id }}">{{.Edit}}</a>
-            <a href="del/{{ .Id }}" target="">{{.Delete}}</a>
-            <a href="read/{{ .Id }}" target="">{{.Read}}</a>
+            <h6 class="hide">{{.Id}}</h6>
+            <div class="links">
+                <a href="edit/{{ .Id }}">{{.Edit}}</a>
+                <a  href="del/{{ .Id }}" target="">{{.Delete}}</a>
+                <a href="read/{{ .Id }}" target="">{{.Read}}</a>
+            </div>
+            
         </div>
 {{end}}
     </div>
