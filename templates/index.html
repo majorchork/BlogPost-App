@@ -12,23 +12,23 @@
 <body>
     <H1>LATEST HAPENINGS, AS E DEY HOT!!!</H1>
     <section>
-        <form action="/feed" method="POST">
+        <form action="{{if .Id}}/update/{{.Id}}{{else}}/feed{{end}}" method="POST">
             <tr class="table">
                 <td>Post Title:</td>
                 <td>
-                    <input type="text" name="post-title"  placeholder="input your post title">
+                    <input type="text" name="post-title" value="{{if .PostTitle}}{{.PostTitle}}{{end}}"  placeholder="input your post title">
                 </td>
             </tr>
             <tr class="table">
                 <td>Post Data:</td>
                 <td>
-                    <textarea name="post-data" placeholder="enter your story here"></textarea>
+                    <textarea name="post-data" placeholder="enter your story here">{{if .Story}}{{.Story}}{{end}}</textarea>
                 </td>
             </tr>
             <tr class="table">
                 <td>Writers Name:</td>
                 <td>
-                    <input type="text" name="writers-name" placeholder="write your name here">
+                    <input type="text" name="writers-name" value="{{if .Writer}}{{.Writer}}{{end}}" placeholder="write your name here">
                 </td>
             </tr>
             <tr>
