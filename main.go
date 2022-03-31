@@ -22,8 +22,6 @@ type Blogpost struct {
 	Delete      string
 }
 
-var Blog []Blogpost
-
 func main() {
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
@@ -35,20 +33,4 @@ func main() {
 		log.Println(err)
 		return
 	}
-
-}
-
-func RenderHandler(w http.ResponseWriter, router *http.Request) {
-	file, err := templates.ParseFiles("templates/index.html")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	err = file.ExecuteTemplate(w, "index.html", nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
 }
