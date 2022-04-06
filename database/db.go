@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"database/sql"
@@ -14,7 +14,6 @@ type News struct {
 	Time      string
 }
 
-//var Templates *template.Template
 var DBClient *sql.DB
 
 func OpenDb() {
@@ -69,15 +68,15 @@ func EditValue(Id string) News {
 	}
 	return fields
 }
-func Edit(Id, Writer, Story, Time, PostTitle string) {
-	updateQuery := "UPDATE `BLOG`.`blogpost` SET `writers_name`=?, `story`=?, `time`=?, `post_title`=? WHERE(`client_id`=?);"
+func Edit(Writer, Story, Time, PostTitle, Id string) {
+	updateQuery := "UPDATE `blogpost` SET `writers_name`=?, `story`=?, `time`=?, `post_title`=? WHERE(`client_id`=?);"
 
 	query, err := DBClient.Prepare(updateQuery)
 	if err != nil {
 		log.Fatalf("error executing query: %v", err)
 	}
 	defer query.Close()
-	result, err := query.Exec(Id, Writer, Story, Time, PostTitle)
+	result, err := query.Exec(Writer, Story, Time, PostTitle, Id)
 	rowsAffected, _ := result.RowsAffected()
 	if err != nil || rowsAffected != 1 {
 		log.Fatalf("error updating DB :%v", err)
