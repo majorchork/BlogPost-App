@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/majorchork/blogapp/db"
 	"github.com/majorchork/blogapp/handlers"
 	"log"
 	"net/http"
 )
 
 func main() {
+	db.OpenDb()
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 	handlers.Run(router)
@@ -19,4 +21,6 @@ func main() {
 		log.Println(err)
 		return
 	}
+
+	defer db.DBClient.Close()
 }
